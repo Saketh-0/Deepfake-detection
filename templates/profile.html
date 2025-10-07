@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "deepfake-primary": "#3B82F6",
+              "deepfake-secondary": "#10B981",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center space-x-4">
+        <img
+          src="/api/placeholder/50/50"
+          alt="Logo"
+          class="h-10 w-10 rounded-full"
+        />
+        <h1 class="text-2xl font-bold text-blue-400">Deepfake Detection</h1>
+      </div>
+      <nav>
+        <a href={{url_for("home")}} class="hover:text-deepfake-secondary transition">
+          <i class="fas fa-home mr-2"></i>Home
+        </a>
+        <a href={{url_for("validate")}} class="hover:text-deepfake-secondary transition">
+          <i class="fas fa-user-circle mr-2"></i>Validate
+        </a>
+      </nav>
+    </div>
+
+    <div class="container mx-auto px-4 py-12">
+      <div
+        class="max-w-2xl mx-auto bg-gray-800 rounded-xl shadow-2xl overflow-hidden"
+      >
+        <div
+          class="bg-gradient-to-r from-deepfake-primary to-deepfake-secondary p-6"
+        >
+          <h1 class="text-3xl font-bold text-white text-center">
+            User Profile
+          </h1>
+        </div>
+
+        <div class="p-8">
+          <div class="flex items-center space-x-8 mb-8">
+            <img
+              src="/api/placeholder/200/200"
+              alt="Profile"
+              class="w-32 h-32 rounded-full object-cover border-4 border-deepfake-secondary"
+            />
+            <div>
+              <h2 id="userName" class="text-2xl font-semibold text-white">
+                {{user.username}}
+              </h2>
+              <p id="userEmail">{{user.email}}</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <form
+              class="form"
+              method="post"
+              action="{{ url_for('edit_influencer_post') }}"
+            >
+              <input
+                id="firstNameInput"
+                type="text"
+                placeholder="First Name"
+                class="hidden w-full p-2 bg-gray-700 rounded mb-4"
+              />
+              <input
+                id="lastNameInput"
+                type="text"
+                placeholder="Last Name"
+                class="hidden w-full p-2 bg-gray-700 rounded mb-4"
+              />
+              <input
+                id="emailInput"
+                type="email"
+                placeholder="Email"
+                class="hidden w-full p-2 bg-gray-700 rounded mb-4"
+              />
+
+              <button
+                id="saveChangesBtn"
+                type="submit"
+                class="hidden w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded mb-2"
+              >
+                Save Changes
+              </button>
+            </form>
+            <button
+              id="editProfileBtn"
+              class="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-2"
+            >
+              Edit Profile
+            </button>
+
+            <a
+              id="signOutBtn"
+              href="/logout"
+              class="w-full bg-red-600 hover:bg-red-700 text-white p-2 rounded flex items-center justify-center gap-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" x2="9" y1="12" y2="12" />
+              </svg>
+              Sign Out
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Get DOM elements
+        const editProfileBtn = document.getElementById("editProfileBtn");
+        const saveChangesBtn = document.getElementById("saveChangesBtn");
+        const signOutBtn = document.getElementById("signOutBtn");
+
+        const firstNameInput = document.getElementById("firstNameInput");
+        const lastNameInput = document.getElementById("lastNameInput");
+        const emailInput = document.getElementById("emailInput");
+
+        const userName = document.getElementById("userName");
+        const userEmail = document.getElementById("userEmail");
+
+        // Edit Profile Button
+        editProfileBtn.addEventListener("click", () => {
+          // Show input fields
+          firstNameInput.classList.remove("hidden");
+          lastNameInput.classList.remove("hidden");
+          emailInput.classList.remove("hidden");
+          saveChangesBtn.classList.remove("hidden");
+          editProfileBtn.classList.add("hidden");
+
+          // Populate inputs with current values
+          const [firstName, lastName] = userName.textContent.split(" ");
+          firstNameInput.value = firstName;
+          lastNameInput.value = lastName;
+          emailInput.value = userEmail.textContent;
+        });
+
+        // Save Changes Button
+        saveChangesBtn.addEventListener("click", () => {
+          const newFirstName = firstNameInput.value.trim();
+          const newLastName = lastNameInput.value.trim();
+          const newEmail = emailInput.value.trim();
+
+          // Validate inputs
+          if (newFirstName && newLastName && newEmail) {
+            // Update displayed name and email
+            userName.textContent = `${newFirstName} ${newLastName}`;
+            userEmail.textContent = newEmail;
+
+            // Hide input fields
+            firstNameInput.classList.add("hidden");
+            lastNameInput.classList.add("hidden");
+            emailInput.classList.add("hidden");
+            saveChangesBtn.classList.add("hidden");
+            editProfileBtn.classList.remove("hidden");
+          } else {
+            alert("Please fill in all fields");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

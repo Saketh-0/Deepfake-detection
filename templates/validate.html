@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deepfake Detection</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <div class="flex items-center space-x-4">
+        <img
+          src="/api/placeholder/50/50"
+          alt="Logo"
+          class="h-10 w-10 rounded-full"
+        />
+        <h1 class="text-2xl font-bold text-blue-400">Deepfake Detection</h1>
+      </div>
+      <nav>
+        <a href={{url_for("home")}} class="hover:text-deepfake-secondary transition">
+          <i class="fas fa-home mr-2"></i>Home
+        </a>
+        <a href="/profile"class="hover:text-deepfake-secondary transition">
+          <i class="fas fa-user-circle mr-2"></i>Profile
+        </a>
+      </nav>
+    </div>
+
+    <main class="container mx-auto mt-16 px-4 animate-fade-in">
+      <section
+        class="max-w-2xl mx-auto bg-gray-800/70 p-8 rounded-lg shadow-xl"
+      >
+        <h2 class="text-4xl font-bold mb-6 text-center text-blue-400">
+          Validate Your Video
+        </h2>
+        <p class="text-center mb-4">
+          Upload a video to check if it's a potential deepfake
+        </p>
+        <form
+          action="{{ url_for('validate') }}"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div
+            class="border-dashed border-2 border-blue-400 rounded-lg p-8 text-center mb-4"
+          >
+            <input
+              type="file"
+              id="videoUpload"
+              accept=".mp4,.avi,.mov,.webm"
+              class="hidden"
+              onchange="previewVideo(event)"
+              name="video_file"
+              required
+            />
+
+            <label
+              for="videoUpload"
+              class="cursor-pointer inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+            >
+              Select Video File
+            </label>
+            <p class="mt-2 text-sm text-gray-400">
+              Supported formats: MP4, AVI, MOV, WebM (Max 1GB)
+            </p>
+          </div>
+
+          <div id="videoPreviewContainer" class="hidden mb-4">
+            <video id="videoPreview" controls class="w-full rounded-lg"></video>
+            <div
+              id="fileInfo"
+              class="mt-2 text-center text-sm text-gray-300"
+            ></div>
+          </div>
+
+          <button
+            id="analyzeButton"
+            type="submit"
+            class="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50"
+            disabled
+          >
+            Start Deepfake Analysis
+          </button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="container mx-auto mt-8 text-center">
+      <div class="flex justify-center space-x-4">
+        <a href="#" class="text-gray-400 hover:text-blue-300">Privacy Policy</a>
+        <a href="#" class="text-gray-400 hover:text-blue-300"
+          >Terms of Service</a
+        >
+      </div>
+      <p class="mt-4 text-gray-500">
+        © 2024 Deepfake Detection. All rights reserved.
+      </p>
+    </footer>
+
+    <script>
+      function previewVideo(event) {
+        const file = event.target.files[0];
+        const videoPreview = document.getElementById("videoPreview");
+        const videoPreviewContainer = document.getElementById(
+          "videoPreviewContainer"
+        );
+        const fileInfo = document.getElementById("fileInfo");
+        const analyzeButton = document.getElementById("analyzeButton");
+
+        if (file) {
+          // Check file size (1GB = 1024 * 1024 * 1024 bytes)
+          if (file.size > 1024 * 1024 * 1024) {
+            alert("File is too large. Maximum file size is 1GB.");
+            event.target.value = ""; // Clear the file input
+            return;
+          }
+
+          // Check file type
+          const validTypes = [
+            "video/mp4",
+            "video/avi",
+            "video/quicktime",
+            "video/webm",
+          ];
+          if (!validTypes.includes(file.type)) {
+            alert(
+              "Invalid file type. Supported formats are MP4, AVI, MOV, WebM."
+            );
+            event.target.value = ""; // Clear the file input
+            return;
+          }
+
+          // Create object URL for video preview
+          const objectURL = URL.createObjectURL(file);
+          videoPreview.src = objectURL;
+
+          // Show video preview container
+          videoPreviewContainer.classList.remove("hidden");
+
+          // Display file information
+          fileInfo.textContent = `${file.name} - ${(
+            file.size /
+            1024 /
+            1024
+          ).toFixed(2)} MB`;
+
+          // Enable analyze button
+          analyzeButton.disabled = false;
+
+          // Clean up the object URL when video is loaded to free up memory
+          videoPreview.onloadedmetadata = () => {
+            URL.revokeObjectURL(objectURL);
+          };
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Deepfake Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-black to-blue-900 min-h-screen flex items-center justify-center">
+    <nav class="w-full bg-gray-800 text-white p-4 flex items-center justify-between shadow-lg fixed top-0 left-0 z-50">
+        <a href="MainPage.html" class="text-xl font-bold hover:text-blue-400 transition">
+            Home
+        </a>
+        <h1 class="text-lg font-semibold">Deepfake Detection</h1>
+    </nav>
+    
+    <div class="container mx-auto px-4">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl overflow-hidden max-w-md mx-auto">
+            <div class="p-8 bg-gray-700 flex flex-col justify-center">
+                <h2 class="text-3xl font-bold text-center mb-6 text-blue-400">
+                    <i class="fas fa-sign-in-alt mr-3"></i>Login
+                </h2>
+                
+                <form id="loginForm" class="space-y-4" method="post">
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="username" name="username" placeholder="Username" 
+                            class="w-full pl-10 p-3 bg-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                        <input type="password" name="password" id="password" placeholder="Password" 
+                            class="w-full pl-10 p-3 bg-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 py-2 px-4 text-sm rounded-lg hover:bg-blue-700 transition transform hover:scale-105 mt-6">
+                        Login
+                    </button>
+                    
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-300">Don't have an account? 
+                        <a href={{ url_for("signup")}} class="text-green-400 hover:underline">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

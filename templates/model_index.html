@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deepfake Detector - Hackathon Project</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-container">
+      <header>
+        <h1><i class="fas fa-shield-alt"></i> Deepfake Detector</h1>
+        <p>Upload a video or audio file to check for deepfakes.</p>
+      </header>
+
+      <div class="upload-section">
+        <form method="POST" action="/" enctype="multipart/form-data">
+          <input type="file" name="video_file" required />
+          <input type="number" name="sequence_length" value="60" required />
+          <button type="submit">Upload Video</button>
+        </form>
+      </div>
+
+      <div id="result" class="result"></div>
+
+      <div class="video-container">
+        <video id="uploadedVideo" controls>
+          <source src="" type="video/mp4" />
+        </video>
+      </div>
+    </div>
+
+    <footer>
+      <p>Made with ❤️ by [Your Team Name] for National Hackathon 2024</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

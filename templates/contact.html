@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Deepfake Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-deepfake-dark text-white min-h-screen flex items-center justify-center">
+    <div class="bg-black/30 p-8 rounded-lg shadow-xl w-96">
+        <h2 class="text-3xl text-center mb-6 text-deepfake-primary">
+            <i class="fas fa-envelope mr-3"></i>Contact Us
+        </h2>
+        
+        <form id="contactForm" class="space-y-4">
+            <div>
+                <label class="block mb-2">
+                    <i class="fas fa-user mr-2"></i>Name
+                </label>
+                <input type="text" class="w-full p-2 bg-black/50 rounded" required>
+            </div>
+            <div>
+                <label class="block mb-2">
+                    <i class="fas fa-envelope mr-2"></i>Email
+                </label>
+                <input type="email" class="w-full p-2 bg-black/50 rounded" required>
+            </div>
+            <div>
+                <label class="block mb-2">
+                    <i class="fas fa-comment mr-2"></i>Message
+                </label>
+                <textarea class="w-full p-2 bg-black/50 rounded" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-deepfake-secondary p-3 rounded hover:bg-opacity-80 transition">
+                Send Message
+            </button>
+        </form>
+    </div>
+</body>
+</html>

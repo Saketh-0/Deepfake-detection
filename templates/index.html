@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'deepfake-dark': '#121212',
+                        'deepfake-primary': '#4CAF50',
+                        'deepfake-secondary': '#2196F3'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'slide-up': 'slideUp 0.8s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-black to-blue-900 text-white">
+    <nav class="fixed top-0 w-full bg-black/70 backdrop-blur-md z-50">
+        <div class="container mx-auto flex justify-between items-center p-4">
+            <div class="flex items-center space-x-4">
+                <img src="/static/logo.png" alt="Logo" class="h-10 w-10 rounded-full">
+                <h1 class="text-2xl font-bold text-deepfake-primary animate-fade-in">Deepfake Detection</h1>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="#home" class="hover:text-deepfake-secondary transition">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="#dashboard" class="hover:text-deepfake-secondary transition">
+                    <i class="fas fa-chart-line mr-2"></i>Dashboard
+                </a>
+                <a href="#faqs" class="hover:text-deepfake-secondary transition">
+                    <i class="fas fa-question-circle mr-2"></i>FAQs
+                </a>
+                <a href={{url_for('profile')}} class="hover:text-deepfake-secondary transition">
+                    <i class="fas fa-user-circle mr-2"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="container mx-auto mt-24 p-6 text-center">
+        <h2 class="text-5xl font-bold mb-6 text-deepfake-primary animate-fade-in">
+            <i class="fas fa-shield-alt mr-3"></i>Deepfake Detection
+        </h2>
+        <p class="text-xl mb-10 max-w-2xl mx-auto text-gray-300 animate-fade-in">
+            Advanced AI Technology to Protect Digital Authenticity and Integrity
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-8 mt-12">
+            <div class="bg-gray-800/50 p-6 rounded-lg hover:scale-105 transition transform animate-fade-in">
+                <i class="fas fa-upload text-4xl mb-4 text-deepfake-secondary"></i>
+                <h3 class="text-2xl mb-2">Upload Video</h3>
+                <p class="text-gray-400 mb-4">Easily upload your video for analysis</p>
+                <a href={{url_for('validate')}} class="inline-block bg-deepfake-primary text-white px-6 py-3 rounded-lg hover:bg-deepfake-secondary transition">
+                    <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Video
+                </a>
+            </div>
+            <div class="bg-gray-800/50 p-6 rounded-lg hover:scale-105 transition transform animate-fade-in">
+                <i class="fas fa-robot text-4xl mb-4 text-deepfake-secondary"></i>
+                <h3 class="text-2xl mb-2">AI Analysis</h3>
+                <p class="text-gray-400">Advanced AI examines video content</p>
+                <button
+  type="button"
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#modal123"
+>
+  View Complete Info
+</button>
+                
+            </div>
+            <div class="bg-gray-800/50 p-6 rounded-lg hover:scale-105 transition transform animate-fade-in">
+                <i class="fas fa-file-alt text-4xl mb-4 text-deepfake-secondary"></i>
+                <h3 class="text-2xl mb-2">Detailed Results</h3>
+                <p class="text-gray-400">Comprehensive deepfake detection report</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="container mx-auto px-4 py-16">
+        <h2 class="text-4xl font-bold mb-12 text-center text-blue-400 animate-fade-in">
+            <i class="fas fa-chart-pie mr-3"></i>Deepfake Detection Dashboard
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Deepfake Detection Rates -->
+            <div class="bg-gray-800/70 p-6 rounded-lg shadow-xl animate-fade-in">
+                <h3 class="text-2xl font-semibold mb-4 text-green-400">
+                    <i class="fas fa-chart-line mr-2"></i>Detection Rates
+                </h3>
+                <canvas id="detectionRatesChart"></canvas>
+            </div>
+
+            <!-- Video Analysis Summary -->
+            <div class="bg-gray-800/70 p-6 rounded-lg shadow-xl animate-fade-in">
+                <h3 class="text-2xl font-semibold mb-4 text-blue-400">
+                    <i class="fas fa-video mr-2"></i>Video Analysis
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-gray-700 pb-2">
+                        <span>Total Videos Analyzed</span>
+                        <span class="font-bold text-green-400 total-videos">0</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-700 pb-2">
+                        <span>Deepfake Detected</span>
+                        <span class="font-bold text-red-400 deepfake-count">0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Authenticity Rate</span>
+                        <span class="font-bold text-blue-400 authentic-count">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Threats by Category -->
+            <div class="bg-gray-800/70 p-6 rounded-lg shadow-xl animate-fade-in">
+                <h3 class="text-2xl font-semibold mb-4 text-red-400">
+                    <i class="fas fa-shield-alt mr-2"></i>Threat Categories
+                </h3>
+                <canvas id="threatCategoriesChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQs Section -->
+    <section id="faqs" class="container mx-auto px-4 py-16">
+        <h2 class="text-4xl font-bold mb-12 text-center text-blue-400 animate-fade-in">
+            <i class="fas fa-question-circle mr-3"></i>Frequently Asked Questions
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-gray-800/70 p-6 rounded-lg animate-slide-up">
+                <h3 class="text-2xl mb-4 text-green-400"><i class="fas fa-info-circle mr-2"></i>What is a Deepfake?</h3>
+                <p class="text-gray-300">A deepfake is an AI-generated video or audio recording that realistically
+                    replaces someone's likeness or voice with another person's.</p>
+            </div>
+            <div class="bg-gray-800/70 p-6 rounded-lg animate-slide-up">
+                <h3 class="text-2xl mb-4 text-blue-400"><i class="fas fa-cogs mr-2"></i>How Does Detection Work?</h3>
+                <p class="text-gray-300">Our AI analyzes microscopic visual and audio inconsistencies that human eyes
+                    can't detect, identifying manipulated content.</p>
+            </div>
+            <div class="bg-gray-800/70 p-6 rounded-lg animate-slide-up">
+                <h3 class="text-2xl mb-4 text-red-400"><i class="fas fa-lock mr-2"></i>Is My Data Safe?</h3>
+                <p class="text-gray-300">We use end-to-end encryption and strict privacy protocols to ensure your
+                    uploaded videos remain confidential.</p>
+            </div>
+            <div class="bg-gray-800/70 p-6 rounded-lg animate-slide-up">
+                <h3 class="text-2xl mb-4 text-purple-400"><i class="fas fa-film mr-2"></i>What Video Formats Are
+                    Supported?</h3>
+                <p class="text-gray-300">We support MP4, AVI, MOV, and WebM formats with a maximum file size of 1GB.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/50 py-12">
+        <div class="container mx-auto grid md:grid-cols-3 gap-8 px-4">
+            <div>
+                <h3 class="text-2xl font-bold mb-4 text-blue-400">Contact Us</h3>
+                <p class="text-gray-300">Email: support@deepfakedetection.com</p>
+                <p class="text-gray-300">Phone: +1 (555) 123-4567</p>
+                <p class="text-gray-300">Address: 123 AI Street, Tech City, TC 12345</p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4 text-green-400">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="#home" class="text-gray-300 hover:text-deepfake-secondary">Home</a></li>
+                    <li><a href="#dashboard" class="text-gray-300 hover:text-deepfake-secondary">Dashboard</a></li>
+                    <li><a href="#faqs" class="text-gray-300 hover:text-deepfake-secondary">FAQs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-4 text-red-400">Legal</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-300 hover:text-deepfake-secondary">Privacy Policy</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-deepfake-secondary">Terms of Service</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-deepfake-secondary">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="text-center mt-8 text-gray-400">
+            © 2024 Deepfake Detection. All rights reserved.
+        </div>
+        <div class="flex justify-center space-x-4 mt-4">
+            <a href="#" class="text-gray-400 hover:text-deepfake-secondary"><i class="fab fa-twitter text-2xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-deepfake-secondary"><i class="fab fa-facebook text-2xl"></i></a>
+            <a href="#" class="text-gray-400 hover:text-deepfake-secondary"><i class="fab fa-linkedin text-2xl"></i></a>
+        </div>
+    </footer>
+
+    <!-- Chart Initialization Script -->
+    <script>
+        // Detection Rates Chart
+        const ctx1 = document.getElementById('detectionRatesChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Detection Accuracy',
+                    data: [65, 59, 80, 81, 56, 85],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Threat Categories Chart
+        const ctx2 = document.getElementById('threatCategoriesChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: ['Identity Theft', 'Misinformation', 'Political Manipulation', 'Entertainment'],
+                datasets: [{
+                    data: [30, 45, 15, 10],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+
+    <!-- Update statistics script -->
+    <script>
+        // Update statistics
+        fetch('/api/stats')
+            .then(response => response.json())
+            .then(data => {
+                // Update the statistics in your dashboard
+                document.querySelector('.total-videos').textContent = data.total_videos;
+                document.querySelector('.deepfake-count').textContent = data.deepfake_count;
+                document.querySelector('.authentic-count').textContent = data.authentic_count;
+                
+                // Update charts
+                detectionRatesChart.data.datasets[0].data = [
+                    data.authentic_count,
+                    data.deepfake_count
+                ];
+                detectionRatesChart.update();
+
+                threatCategoriesChart.data.datasets[0].data = [
+                    Math.round(data.deepfake_count * 0.3),  // Identity Theft
+                    Math.round(data.deepfake_count * 0.45), // Misinformation
+                    Math.round(data.deepfake_count * 0.15), // Political
+                    Math.round(data.deepfake_count * 0.1)   // Entertainment
+                ];
+                threatCategoriesChart.update();
+            });
+    </script>
+
+<div
+  class="modal fade"
+  id="modal123"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Campaign Details</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

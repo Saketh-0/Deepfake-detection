@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detection Result</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex-grow: 1;
+        }
+        .certificate {
+            background: linear-gradient(135deg, 
+                var(--cert-bg-start), 
+                var(--cert-bg-end)
+            );
+            border: 2px solid var(--cert-border);
+            box-shadow: 0 10px 30px var(--cert-shadow);
+        }
+        .navbar-brand {
+            background: linear-gradient(to right, #38b2ac, #4fd1c5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hash-display {
+            word-break: break-all;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="bg-neutral-900 border-b border-neutral-800 px-6 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <a href="#" class="navbar-brand text-2xl font-bold">Deepfake Detection</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button onclick="signOut()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content container mx-auto px-4 py-8">
+        <div class="result-container grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
+            <!-- Left Side: Video Analysis -->
+            <div class="flex flex-col justify-center space-y-6">
+                <div>
+                    <h1 class="text-5xl font-bold mb-4" id="authenticityText"></h1>
+                    <div class="badge inline-block bg-neutral-800 px-4 py-2 rounded-full">
+                        <span class="text-xl font-semibold" id="confidenceText"></span>
+                    </div>
+                </div>
+
+                <div class="bg-neutral-800 rounded-2xl p-6 space-y-4">
+                    <div>
+                        <p class="text-neutral-400 mb-2">Prediction</p>
+                        <p class="text-2xl font-bold" id="predictionText"></p>
+                    </div>
+                    <div>
+                        <p class="text-neutral-400 mb-2">Verification Hash</p>
+                        <p class="font-mono text-sm text-neutral-200 break-all" id="verificationHash">{{ unique_hash_id }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Certificate -->
+            <div class="flex flex-col justify-center">
+                <div id="certificate" class="certificate rounded-3xl p-8 shadow-2xl space-y-6">
+                    <div class="text-center">
+                        <h2 class="text-4xl font-extrabold mb-4" id="certificateTitle"></h2>
+                        <p class="text-xl font-semibold text-neutral-300">Deepfake Detection Tool</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div>
+                            <p class="text-neutral-400">Date</p>
+                            <p id="currentDate" class="font-semibold"></p>
+                        </div>
+                        <div>
+                            <p class="text-neutral-400">Verification Status</p>
+                            <p class="font-bold" id="verificationStatus"></p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-neutral-300 italic" id="certificateQuote"></p>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-sm text-neutral-500 mb-2">Unique Verification Hash:</p>
+                        <div class="bg-neutral-800 rounded-lg p-3">
+                            <p class="font-mono text-xs text-neutral-300 hash-display">{{ unique_hash_id }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rest of the content -->
+                <div class="mt-6 space-y-4">
+                    <button onclick="downloadCertificate()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white py-4 rounded-lg flex items-center justify-center transition">
+                        <i class="fas fa-download mr-3"></i> Download Certificate
+                    </button>
+                    <div class="flex justify-center space-x-6">
+                        <a href="#" onclick="shareOnPlatform('facebook')" class="text-neutral-400 hover:text-blue-400 transition"><i class="fab fa-facebook-f text-2xl"></i></a>
+                        <a href="#" onclick="shareOnPlatform('twitter')" class="text-neutral-400 hover:text-blue-400 transition"><i class="fab fa-twitter text-2xl"></i></a>
+                        <a href="#" onclick="shareOnPlatform('linkedin')" class="text-neutral-400 hover:text-blue-400 transition"><i class="fab fa-linkedin-in text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-900 border-t border-neutral-800 py-6 px-6">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="text-neutral-400 mb-4 md:mb-0">
+                © 2024 DeepfakeTool. All Rights Reserved.
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="text-neutral-400 hover:text-white transition">Privacy Policy</a>
+                <a href="#" class="text-neutral-400 hover:text-white transition">Terms of Service</a>
+                <a href="#" class="text-neutral-400 hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Set dynamic values based on confidence
+        const confidence = {{ confidence }};  // Set this variable from server-side templating
+        const prediction = '{{ prediction }}';  // Set this variable from server-side templating
+        const unique_hash_id = '{{ unique_hash_id }}';  // Set this variable from server-side templating
+
+        window.onload = function() {
+            const currentDate = new Date();
+            document.getElementById('currentDate').textContent = formatDate(currentDate);
+
+            // Set text content based on confidence
+            document.getElementById('authenticityText').textContent = confidence >= 75 ? 'Authentic Video' : 'Deepfake Detected';
+            document.getElementById('confidenceText').textContent = `Confidence: ${confidence}%`;
+            document.getElementById('confidenceText').classList.add(confidence >= 75 ? 'text-emerald-400' : 'text-rose-400');
+            document.getElementById('predictionText').textContent = prediction;
+            document.getElementById('predictionText').classList.add(confidence >= 75 ? 'text-emerald-400' : 'text-rose-400');
+            document.getElementById('certificateTitle').textContent = confidence >= 75 ? 'AUTHENTICITY CERTIFICATE' : 'DEEPFAKE CERTIFICATE';
+            document.getElementById('certificateTitle').classList.add(confidence >= 75 ? 'text-emerald-500' : 'text-rose-500');
+            document.getElementById('verificationStatus').textContent = confidence >= 75 ? 'VERIFIED' : 'UNVERIFIED';
+            document.getElementById('verificationStatus').classList.add(confidence >= 75 ? 'text-emerald-500' : 'text-rose-500');
+            document.getElementById('certificateQuote').textContent = `This certificate verifies the ${confidence >= 75 ? 'authenticity' : 'potential deepfake status'} of the provided video content.`;
+
+            // Set CSS variables dynamically
+            document.documentElement.style.setProperty('--cert-bg-start', confidence >= 75 ? '#064e3b' : '#831843');
+            document.documentElement.style.setProperty('--cert-bg-end', confidence >= 75 ? '#115e59' : '#9f1239');
+            document.documentElement.style.setProperty('--cert-border', confidence >= 75 ? '#10b981' : '#f43f5e');
+            document.documentElement.style.setProperty('--cert-shadow', confidence >= 75 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(244, 63, 94, 0.3)');
+        };
+
+        function formatDate(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function downloadCertificate() {
+            html2canvas(document.querySelector("#certificate")).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL();
+                link.download = 'certificate.png';
+                link.click();
+            });
+        }
+
+        function signOut() {
+            // Placeholder for sign-out functionality
+            alert('Signing out...');
+        }
+
+        function shareOnPlatform(platform) {
+            // Placeholder for social media sharing functionality
+            alert(`Sharing on ${platform}...`);
+        }
+    </script>
+</body>
+</html>
